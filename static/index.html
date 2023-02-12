@@ -1,0 +1,1172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
+  <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+  <!-- CSS only -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+    integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"
+    type="text/css" /> -->
+  <script src="https://www.bacubacu.com/colresizable/js/colResizable-1.5.min.js" type="text/javascript"></script>
+  </script>
+  <!-- initialize the map on loadin -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>
+    Blind Ministry Routing
+  </title>
+  <style type="text/css">
+    .jumbotron {
+      background-color: #143866;
+      color: #81c341;
+      width: 100%;
+      height: 200px;
+    }
+
+    .attendees {
+      overflow: scroll;
+      position: absolute;
+      height: 50%;
+      width: 50%;
+      float: right;
+      clear: right;
+      left: 639px;
+      top: 74px;
+      padding-left: 20px;
+    }
+
+    .drivers {
+      overflow: scroll;
+      position: absolute;
+      height: 50%;
+      width: 50%;
+      float: left;
+    }
+
+    map {
+      width: 100%;
+      height: 600px;
+      float: none;
+      clear: both;
+      position: absolute;
+      left: 1px;
+      top: 560px;
+    }
+
+    table {
+      border-spacing: 5px;
+      border-left: 2px solid black;
+      border-right: 2px solid black;
+      border-top: 2px solid black;
+      border-bottom: 2px solid black;
+
+    }
+
+    th,
+    td {
+      padding: 15px;
+      width: auto;
+      border-spacing: 5px;
+      border-bottom: 2px solid black;
+      text-align: center;
+
+    }
+
+    tr {
+      border-left: 2px solid black;
+      border-right: 2px solid black;
+    }
+
+
+    tbody,
+    tr:nth-child(odd) {
+      background-color: #b4cbff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container-fluid">
+    <div class="jumbotron text-center">
+        <h1 style="padding-top:25px !important;">
+          Blind Ministry
+        </h1>
+        <div class="row" class="text-center" style="padding-top: 25px;">
+      <div class="col-sm-5"></div>
+      <div class="col-sm-2">
+        <button class="btn btn-success" id="manage" onclick=document.location="https://davidgs.com:3000/update.html" >Manage Participants</button>
+      </div>
+      <div class="col-sm-5"></div>
+    </div>
+    </div>
+
+      <div class="row" style="height: 4em; margin-top: 2em;">
+        <div class="col-sm-2"></div>
+        <div class=" col-sm-3">
+          <h2 style="text-align: center;">
+            Drivers
+          </h2>
+        </div>
+        <div class="col-sm-2"></div>
+        <div class="col-sm-3">
+          <h2 style="text-align: center;">
+            Attendees
+          </h2>
+        </div>
+        <div class="col-sm-2"></div>
+
+      </div>
+      <div class="row">
+        <div class="col-sm-2">&nbsp;</div>
+        <div class="col-sm-2"><button class="btn btn-primary" id="addDrivers" value="drivers" onclick="addInfo(this.value)">Add Driver</button>
+        </div>
+        <div class="col-sm-2" id="drivers"></div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-2"><button class="btn btn-primary" id="addAttendees" value="Attendees" onclick="addInfo(this.value)">Add
+            Attendee</button></div>
+        <div class="col-sm-2" id="attendees"></div>
+        <div class="col-sm-1">&nbsp;</div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">&nbsp;</div>
+
+
+        <div class="col-sm-2">&nbsp;</div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          &nbsp;
+        </div>
+        <div class="col-sm-8">
+          <h2 style="text-align: center;">
+            Map
+          </h2>
+        </div>
+        <div class="col-sm-2">
+          &nbsp;
+        </div>
+      </div>
+      <div class='row'>
+        <div class="col-sm-1">&nbsp;</div>
+        <div class="col-sm-10" id="map" style="height: 600px;"></div>
+        <div class="col-sm-1">&nbsp;</div>
+      </div>
+      <div class='row'>
+        <div class='col-sm-12'>&nbsp;</div>
+      </div>
+      <div class='row'>
+        <div class='col-sm-4'>&nbsp;</div>
+        <div class='col-sm-4'>
+          <h2 style="text-align: center;">Available Drivers</h2>
+        </div>
+        <div class='col-sm-4'>&nbsp;</div>
+      </div>
+      <div class='row'>
+        <div class='col-sm-1'>&nbsp;</div>
+        <div class='col-sm-10' id='selectedDrivers'></div>
+        <div class='col-sm-1'>&nbsp;</div>
+      </div>
+      <div class='row'>
+        <div class='col-sm-12'>&nbsp;</div>
+      </div>
+      <div class='row'>
+        <div class='col-sm-4'>&nbsp;</div>
+        <div class='col-sm-4'>
+          <h2 style="text-align: center;">Attendees</h2>
+        </div>
+        <div class='col-sm-4'>&nbsp;</div>
+      </div>
+      <div class='row'>
+        <div class='col-sm-1'>&nbsp;</div>
+        <div class='col-sm-10' id='selectedAttendees'>
+          <div class='col-sm-1'>&nbsp;</div>
+        </div>
+        <div class='row'>
+          <div class='col-sm-12'>&nbsp;</div>
+        </div>
+        <div class='row'>
+          <div class='col-sm-12' id='driversRoutes'>
+          </div>
+        </div>
+      </div>
+
+
+      <script type="text/javascript">
+
+        // all routes end at RLC
+        var endRoute = {};
+        endRoute.lat = 35.7298286;
+        endRoute.lng = -78.77857179999999;
+        endRoute.Address = "Ressurection Lutheran Church 100 W Lochmere Dr Cary, NC 27511";
+        var host = location.host;
+        var dbServerURL = "http://" + location.host + "/api/";
+
+        // color for passengers that have been assigned a route.
+        var routed = "#728C00";
+        // list of drivers
+        var driverList = [];
+        // the main google map
+        var map;
+        // array of all map markers.
+        var markers = [];
+        var directionsService;
+        // each driver has their own 'line'
+        var driverLines = [];
+        // array of all the mini-maps
+        var maps = [];
+        var routes = [];
+
+        // colors for the various drivers
+        var colors = ["Aqua", "Aquamarine", "Blue", "BlueViolet", "Brown", "Charteuse", "Chocolate", "Coral", "CornflowerBlue", "Crimson", "DarkCyan", "DarkGoldenRod", "DarkGreen", "DarkMagenta", "DarkOrange", "DarkOrchid", "DarkRed", "DarkSlateBlue", "DeepPink", "DodgerBlue", "Gold", "Green", "Indigo", "LightGreen", "MediumSlateBlue", "Navy", "OliveDrab", "OrangeRed", "Red", "SeaGreen", "SlateBlue", "SteelBlue", "Yellow", "YellowGreen"];
+
+
+        $(function () {
+          $("table").colResizable({
+            resizeMode: 'overflow'
+          });
+          $("driversTable").colResizable({
+            resizeMode: 'overflow'
+          });
+        });
+
+
+        // initialize the map and directions service
+        function initMap() {
+          map = new google.maps.Map(document.getElementById("map"), {
+            center: {
+              lat: 35.79154,
+              lng: -78.7811169
+            },
+            zoom: 10
+          })
+          map.name = "Main";
+          directionsService = new google.maps.DirectionsService;
+          var churchMarker = new google.maps.Marker({
+            position: endRoute,
+            animation: google.maps.Animation.DROP,
+            title: "RLC",
+            icon: "https://maps.google.com/mapfiles/kml/pal2/icon11.png",
+            map: map
+          });
+
+        };
+
+        // Clear the form and show the modal form for adding new drivers/attendees.
+        function addInfo(db) {
+          document.getElementById("editModalLabel").innerHTML = "Add " + db + " Info";
+          document.getElementById("name-text").value = "";
+          document.getElementById("address-text").value = "";
+          document.getElementById("city-text").value = "";
+          document.getElementById("state-text").value = "";
+          document.getElementById("zip-text").value = "";
+          document.getElementById("homePhone-text").value = "";
+          document.getElementById("cellPhone-text").value = "";
+          document.getElementById("email-text").value = "";
+          document.getElementById("notes-text").value = "";
+          document.getElementById("id-text").value = "";
+          document.getElementById("saveButton").setAttribute('onclick', 'addData()');
+          document.getElementById("type-text").value = db;
+          $('#updateModal').modal('show')
+        }
+
+        // given an instance (JSON Object) of a driver/participant geocode their address
+        // and add the location information to the database.
+        function geocodeEntry(instance, db) {
+          var urlStr = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBuLSgVZY-8HyIIMsPMKgvfK6LsLCeSlJA&address=' + instance.Address.replace(/\s/g, '+') + " " + instance.City.replace(/\s/g, '+') + ", " + instance.State;
+          jQuery.getJSON(urlStr, function (data) {
+            if (data.status === "OK") {
+              var url = dbServerURL + db;
+              var method = "PUT";
+              if (instance.hasOwnProperty('_id')) {
+                url += "/" + instance._id;
+                method = "PUT";
+              }
+              instance.Location = data.results[0].geometry.location;
+              // You REALLY want async = true.
+              // Otherwise, it'll block ALL execution waiting for server response.
+              var async = true;
+              var request = new XMLHttpRequest();
+              // Before we send anything, we first have to say what we will do when the
+              // server responds. This seems backwards (say how we'll respond before we send
+              // the request? huh?), but that's how Javascript works.
+              // This function attached to the XMLHttpRequest "onload" property specifies how
+              // the HTTP response will be handled.
+              request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                if (status === 200) {
+                  // Returned JSON data that will need parsing
+                  var jData = JSON.parse(request.response);
+                  var id;
+                  // if they are already in the database, we'll have an ID
+                  if (instance.hasOwnProperty('_id')) {
+                    _id = instance.id;
+                  } else {
+                    _id = jData._id;
+                  }
+                  var tRow = document.getElementById(_id);
+                  // if they are already in the table, update the info in the table too
+                  if (tRow != null) {
+                    var cells = tRow.cells;
+                    if (db.toLowerCase() === "drivers") {
+                      cells[1].innerHTML = jData.Name;
+                      cells[2].innerHTML = jData.Address + "</ br>" + jData.City + ", " + jData.State + " " + jData.Zip;
+                      cells[3].innerHTML = jData.HomePhone;
+                      cells[4].innerHTML = jData.CellPhone;
+                      var mailto = "<a href=\"mailto:" + jData.Email + "?Subject=Blind Ministry Route\">" + jData.Email + "</a>";
+                      cells[5].innerHTML = mailto;
+                      if (jData.hasOwnProperty('Notes')) {
+                        cells[6].innerHTML = jData.Notes;
+                      }
+                    } else {
+                      cells[1].innerHTML = jData.Name;
+                      if (jData.hasOwnProperty('Notes')) {
+                        cells[2].innerHTML = jData.Notes;
+                      }
+                    }
+                  } else { // add the to the select list
+                    addToSelect(_id, jData.Name, db.toLowerCase() + "Table");
+
+                  }
+                } else {
+                  window.alert("Geocoding Address Failed!");
+                }
+              }
+              // alert if geocoding fails
+              request.open(method, url, async);
+              request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+              // Actually sends the request to the server.
+              request.send(JSON.stringify(instance));
+            }
+          });
+
+        }
+
+        // get all the data from the form, build a JSON Object for it, and then send it
+        // all off to be geocoded.
+        function addData() {
+          var instance = {};
+          instance.Name = document.getElementById("name-text").value;
+          instance.Address = document.getElementById("address-text").value;
+          instance.City = document.getElementById("city-text").value;
+          instance.State = document.getElementById("state-text").value;
+          instance.Zip = document.getElementById("zip-text").value;
+          instance.HomePhone = document.getElementById("homePhone-text").value;
+          instance.CellPhone = document.getElementById("cellPhone-text").value;
+          instance.Email = document.getElementById("email-text").value;
+          instance.Notes = document.getElementById("notes-text").value;
+          var db = document.getElementById("type-text").value;
+          var id = document.getElementById("id-text").value;
+          // if we're adding a brand new person, the id will be null, so account for that.
+          if (id != null && id != "") {
+            instance._id = id;
+          }
+          geocodeEntry(instance, db);
+        }
+
+        // each driver gets their own mini-map so we initialize a new mini-map for them
+        // and add them to it.
+        // add the new map to the array of all the maps so we can keep track of it.
+        function initNewMap(id, loc) {
+          var m = new google.maps.Map(document.getElementById(id + "-map"), {
+            center: {
+              lat: loc.lat,
+              lng: loc.lng
+            },
+            zoom: 12
+          });
+          m.name = id;
+          maps.push([id, m]);
+          var churchMarker = new google.maps.Marker({
+            position: endRoute,
+            animation: google.maps.Animation.DROP,
+            title: "RLC",
+            icon: "https://maps.google.com/mapfiles/kml/pal2/icon11.png",
+            map: m
+          });
+          return m;
+        }
+
+        // Return last element of an URL
+        function getLast(url) {
+          return url.split("/").pop();
+        }
+
+        // remove the last element of an url and return the truncated url
+        function removeLast(url) {
+          var f = url.split("/");
+          f.pop();
+          return f.join().replace(/,/g, '/');
+        }
+
+        // takes the selected choice from drop-down, retrieves the info on that ID from
+        // the db, and adds the info to the appropriate Table section
+        function selectedChoice(id, db) {
+          var url = dbServerURL + db + "/" + id;
+          jQuery.getJSON(url, function (data) {
+            var f = removeLast(this.url);
+            console.log(data)
+            var tbl = document.getElementById(getLast(f).toLowerCase() + "Table").getElementsByTagName('tbody')[0];
+            row = tbl.insertRow(-1);
+            var cell = [];
+            row.id = data._id;
+            var x = 0;
+            cell.push(row.insertCell(x));
+
+            var selectVal = "<button class=\"btn btn-success dropdown-toggle\" type=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" id=\"" + getLast(f).toLowerCase() + "Table" + "\" name=\"" + getLast(f).toLowerCase() + "-" + data._id + "\">Choose Action<\/button>";
+            selectVal += "<ul class=\"dropdown-menu\" aria-labelledby=\"dropdownActionMenu\">";
+            selectVal += "<li id=\"" + getLast(f).toLowerCase() + "-" + id + "-edit\"><button id=\"" + getLast(f).toLowerCase() + "Table" +  "\" value=\"" + data._id + "\" onclick=\"editID(this.value, \'" + getLast(f) + "\')\" class=\"dropdown-item\" type=\"button\">Edit</button></li>";
+            selectVal += "<li id=\"" + getLast(f).toLowerCase() + "-" + id + "-remove\"><button class=\"dropdown-item\" type=\"button\" onclick=\"removeRow(this.value, \'" + getLast(f) + "\')\" value=\"" + data._id + "\" name=\"Remove\"\">Remove</button><\/li>";
+            selectVal += "<\/ul>";
+
+            cell[x++].innerHTML = selectVal;
+
+            cell.push(row.insertCell(x));
+            cell[x++].innerHTML = data.Name;
+            // drivers have more details in their table.
+            if (db.toLowerCase() === "drivers") {
+              cell.push(row.insertCell(x));
+              cell[x++].innerHTML = data.Address + "</br>" + data.City + ", " + data.State + " " + data.Zip;
+              cell.push(row.insertCell(x));
+              cell[x++].innerHTML = data.HomePhone;
+              cell.push(row.insertCell(x));
+              cell[x++].innerHTML = data.CellPhone;
+              cell.push(row.insertCell(x));
+              var mailto = "<a href=\"mailto:" + data.Email + "?Subject=Blind Ministry Route\">" + data.Email + "</a>";
+              cell[x++].innerHTML = mailto;
+            }
+
+            cell.push(row.insertCell(x));
+            if (data.hasOwnProperty("Notes")) {
+              cell[x++].innerHTML = data.Notes;
+            } else {
+              cell[x++].innerHTML = "";
+            }
+            // Again, drivers have more info
+            if (getLast(f).toLowerCase() === "drivers") {
+              var c = document.createElement("td");
+              c.id = data._id + "-passengers";
+              //cell.push(row.insertCell(x));
+              const sv = document.createElement("button");
+              console.log(sv.getAttributeNames);
+              sv.id = getLast(f).toLowerCase() + "Route";
+              sv.setAttribute("class", "btn btn-success dropdown-toggle");
+              sv.setAttribute("type", "button");
+              sv.setAttribute("data-bs-toggle", "dropdown");
+              sv.setAttribute("aria-expanded", "false");
+              sv.setAttribute("name", getLast(f).toLowerCase() + "-" + data._id);
+              sv.innerHTML = "Choose Action";
+              var ul = document.createElement("ul");
+              ul.setAttribute("class", "dropdown-menu");
+              ul.setAttribute("aria-labelledby", "dropdownRouteMenu");
+              var li = document.createElement("li");
+              li.id = getLast(f).toLowerCase() + "-route-" + data._id;
+              var btn = document.createElement("button");
+              btn.setAttribute("class", "dropdown-item");
+              btn.setAttribute("type", "button");
+              btn.setAttribute("onclick", "calculateRoute(event, this.value, \'" + getLast(f) + "\')");
+              btn.setAttribute("value", data._id);
+              btn.setAttribute("name", "Show");
+              btn.innerHTML = "Show";
+              li.appendChild(btn);
+              ul.appendChild(li);
+              li = document.createElement("li");
+              li.id = getLast(f).toLowerCase() + "-send-" + id;
+
+              selectVal += "<ul class=\"dropdown-menu\" aria-labelledby=\"dropdownRouteMenu\">";
+              selectVal += "<li id=\"" + getLast(f).toLowerCase() + "-route-" + data._id + "\"><button class=\"dropdown-item\" type=\"button\" onclick=\"calculateRoute(event, this.value, \'" + getLast(f) + "\')\" value=\"" + data._id + "\" name=\"Show\"\">Show<\/button><\/li>";
+
+              selectVal += "<li id=\"" + getLast(f).toLowerCase() + "-send-" + id + "\"><button class=\"dropdown-item\" type=\"button\"  id=\"" + getLast(f).toLowerCase() + "-email-" + data._id + "\" onclick=\"emailRoute(this.value, \'" + getLast(f) + "\')\" value=\"" + data._id + "\" name=\"Send\"\">Send<\/button><\/li>";
+              selectVal += "<\/ul>";
+              c.innerHTML = selectVal;
+              row.appendChild(c);
+              cell[x++] = c;
+              var p = document.createElement("p");
+              c.appendChild(p);
+              p = document.createElement("ul");
+              p.id = "pList-" + data._id + "-list";
+              c.appendChild(p);
+              //cell[x++].innerHTML = selectVal;
+
+              // "<table border=0 id=\"pList-" + data._id + "-Table\" style=\"width:100%\"\>";
+              // cell[x++].id = "pList-" + data._id;
+              // // add a route button
+              // var pTable = document.getElementById("pList-" + data._id + "-Table");
+              // var thead = pTable.createTHead();
+              // var trow = thead.insertRow(0);
+              // tCell = trow.insertCell(0);
+              // tCell.innerHTML = "Route:";
+              // tCell.colSpan = 2;
+              // tCell.style.textAlign = "center";
+              // pTable.appendChild(document.createElement('tbody'))
+              // var pTableRef = pTable.getElementsByTagName('tbody')[0];
+              // var pRow = pTableRef.insertRow(-1);
+              // var pCell = pRow.insertCell(0);
+              // pCell.innerHTML = "<button id=\"" + getLast(f).toLowerCase() + "-route-" + data._id + "\" onclick=\"calculateRoute(event, this.value, \'" + getLast(f) + "\')\" value=\"" + data._id + "\" name=\"Show\"\">Show<\/button>";
+              // pCell = pRow.insertCell(1);
+              // pCell.innerHTML = "<button id=\"" + getLast(f).toLowerCase() + "-email-" + data._id + "\" onclick=\"emailRoute(this.value, \'" + getLast(f) + "\')\" value=\"" + data._id + "\" name=\"Send\"\">Send<\/button>";
+              cell.push(row.insertCell(x))
+              cell[x].id = data._id + "-map";
+              cell[x].style.width = '400px';
+              cell[x].style.height = '400px';
+              var dObj = {};
+              dObj.id = data._id;
+              dObj.name = data.Name;
+              var m = initNewMap(id, data.Location);
+              dObj.map = m;
+              //cell[x].appendChild(m);
+              dObj.markers = [];
+              driverList.push(dObj);
+              addToMap(data._id, "Drivers", m);
+              console.log(m);
+
+            } else { // Attendees have a slot for the Driver's name
+              cell.push(row.insertCell(x));
+              cell[x].name = "driver-name";
+              cell[x].innerHTML = "";
+            }
+
+          });
+          var el = db.toLowerCase() + "-" + id;
+          var s = document.getElementById(el);
+          var p = s.parentNode;
+          p.removeChild(s);
+          // finally add a pin to the mini-map.
+          addToMap(id, db, map);
+        }
+
+
+        // We can't actually send an email but we CAN gather all the info for the route, construct a
+        // google maps URL with the optimized driving directions, etc. so we do that.
+        // user can then cut/paste the text into an email
+        function emailRoute(id) {
+          var tbl = document.getElementById("pList-" + id + "-Table");
+          var passengers = [];
+          // this is the query to get all the passengers from the database in one go
+          var url = dbServerURL + 'Attendees?{"_id": {"$in": [';
+          for (var i = 1; i < tbl.rows.length - 1; i++) {
+            url += '"' + tbl.rows[i].id + '",';
+            passengers.push(tbl.rows[i].id);
+          }
+          url += '"' + tbl.rows[tbl.rows.length - 1].id + '"]}}';
+          jQuery.postJSON(url, function (aData) {
+            var eBody = '';
+            var dirs = ''
+            for (var x = 0; x < aData.length; x++) {
+              eBody += "<li> " + aData[x].Name + "</br>";
+              eBody += "  " + aData[x].Address + "</br>";
+              eBody += "  " + aData[x].City + ", " + aData[x].State + " " + aData[x].Zip + "</br>";
+              eBody += "  Home Phone: <a href=\"tel:" + aData[x].HomePhone + "\">" + aData[x].HomePhone + "<\/a></br>";
+              eBody += "  Cell Phone: <a href=\"tel:" + aData[x].CellPhone + "\">" + aData[x].CellPhone + "<\/a></li>";
+              dirs += aData[x].Address + "," + aData[x].City + "," + aData[x].State + "," + aData[x].Zip + "/";
+            }
+
+            var dURL = dbServerURL + "drivers/" + id;
+            jQuery.getJSON(dURL, function (data) {
+              var dirLink = 'http://maps.google.com/maps/dir/';
+              dirLink += data.Address + "," + data.City + "," + data.State + "," + data.Zip + "/" + dirs + "100 W Lochmere Dr, Cary, NC 27518";
+              eBody += "</ul><p>The following link should take you to a map of your entire route ending a RLC: <a href=\"" + dirLink + "\" target=\"_blank\">Route Map</a>.</p><p>Please call your riders at least 1 or 2 days ahead of time. If you are reading this email on a Smart Phone, you can simply click on the phone number in this email to call the number.</p><p>A number of times some of you have driven to a house only to find out that the person is not home or not feeling well. If you feel comfortable with that you can give them your phone number. I always leave for church around 3.30pm and might not be home anymore in case they call me.</p><p>Also, just in case you need it, my cell phone is 516-639-9847.</p><p>Thank you for all you do!</p><p>Annette</p><p>--</br>Annette Langefeld-Kennedy</br>919-768-1960</p>";
+              var n = data.Name;
+              var email = data.Email;
+              var finalEmail = "<p>Hello " + data.Name + ",</p>" + "<p>Thank you so much for volunteering to drive this month.</p>" + "<p>Here are the names, addresses, and phone numbers of the people you will be driving:</p><ul>" + eBody;
+
+              finalEmail += "<hr><strong>Copy the above text, then close this window, click on the driver's email address, and paste the Contents into the email to send.</strong";
+
+              var eDoc = document.getElementById("eDoc");
+              eDoc.innerHTML = finalEmail;
+              document.getElementById("emailRouteTitle").innerHTML = "Routes for " + data.Name;
+              $('#emailRouteModal').modal('show')
+            });
+          });
+          this.getBody = function () {
+            return emailBody;
+          }
+          //
+        }
+
+        // remove a route from a map
+        // @event so we can stop propagating the event
+        // @id the id of the driver so we can find it
+        function removeRoute(event, id) {
+          event = event || window.event;
+          if (typeof event.stopPropagation != "undefined") {
+            event.stopPropagation();
+          } else {
+            event.cancelBubble = true;
+          }
+          for (var x = 0; x < driverLines.length; x++) {
+            var tLine = driverLines[x];
+            if (driverLines[x][0] === id) {
+              driverLines[x][1].setMap(null);
+              driverLines[x][1] = null;
+              driverLines.splice(x, 1);
+              document.getElementById("drivers-route-" + id).innerHTML = "<button id=\"drivers-route-" + id + "\" onclick=\"calculateRoute(event, this.value, \'Drivers\')\" value=\"" + id + "\" name=\"Show\"\">Show <\/button>";
+              break; // removed from aray and map
+            }
+
+          }
+        }
+
+        // calculate a direct/route for a given driver
+        function calculateRoute(event, id, mapID) {
+          // go thorough the table and get all passengers
+          event = event || window.event;
+          if (typeof event.stopPropagation != "undefined") {
+            event.stopPropagation();
+          } else {
+            event.cancelBubble = true;
+          }
+
+          var tbl = document.getElementById("pList-" + id + "-Table");
+          var dMap;
+          for (var x = 0; x < driverList.length; x++) {
+            if (driverList[x].id === id) {
+              dMap = driverList[x].map;
+              break;
+            }
+          }
+          var btn = document.getElementById("drivers" + "-route-" + id);
+          btn.innerHTML = "<button id=\"" + drivers + "-route-" + id + "\" onclick=\"removeRoute(event, this.value, \'" + drivers + "\')\" value=\"" + id + "\" name=\"Hide\"\">Hide<\/button>"
+          var passengers = [];
+          var url = dbServerURL + 'Attendees'
+          var pdata = { "_id": { "$in": [] } };
+          for (var i = 2; i < tbl.rows.length; i++) {
+            //pdata += '"' + tbl.rows[i].id + '",';
+            passengers.push(tbl.rows[i].id);
+          }
+          pdata._id.$in = passengers;
+          //url += '"' + tbl.rows[tbl.rows.length - 1].id + '"]}}}';
+          console.log(pdata);
+          jQuery.post(url, pdata, function (data) {
+            var waypoints = [];
+            for (x = 0; x < data.length; x++) {
+              waypoints.push({
+                "location": data[x].Address + ", " + data[x].City + ", " + data[x].State + ", " + data[x].Zip,
+                "stopover": true
+              });
+            }
+            var driverURL = dbServerURL + "drivers/" + getId();
+            jQuery.getJSON(driverURL, function (dData) {
+              var routeObject = {};
+              var lat = dData.Location.lat;
+              var lng = dData.Location.lng;
+              routeObject.origin = dData.Address + ", " + dData.City + ", " + dData.State + ", " + dData.Zip;
+              // new google.maps.LatLng(lat, lng);
+              lat = endRoute.lat;
+              lng = endRoute.lng;
+              routeObject.destination = endRoute.Address // new google.maps.LatLng(lat, lng);
+              routeObject.waypoints = waypoints;
+              routeObject.travelMode = google.maps.TravelMode.DRIVING;
+              routeObject.optimizeWaypoints = true;
+              console.log(routeObject);
+              directionsService.route(routeObject, function (response, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                  var directionsDisplay = new google.maps.DirectionsRenderer({
+                    polylineOptions: {
+                      strokeColor: colors[driverLines.length]
+                    }
+                  });
+                  directionsDisplay.setMap(dMap);
+                  directionsDisplay.setDirections(response);
+                  var dRoute = [getId(), directionsDisplay];
+                  driverLines.push(dRoute);
+                } else {
+                  window.alert('Directions request failed due to ' + status);
+                }
+              });
+            });
+            this.getWaypoints = function () {
+              return waypoints;
+            }
+          });
+          this.getId = function () {
+            return id;
+          }
+        }
+
+        // populate the list of available drivers in an Attendee's map marker
+        // this is called each time an Attendee's map pop-up is shown so the list is always current.
+        function fillList(popup) {
+          var sel = document.getElementById(popup);
+          sel.innerHTML = "";
+          var selContent = '<select id=\'route-' + popup.split('-').pop() + '\' name=\'' + popup.split('-').pop() + '\' onmousedown=\'fillList(this.id)\' onchange=\'driverSelected(this.id)\'>';
+          selContent += '<option value=\'None Selected\' name=\'None selected\'>Select Driver<\/option>'
+
+          var dTable = document.getElementById('driversTable');
+          var id;
+          for (var i = 1, row; row = dTable.rows[i]; i++) {
+            //iterate through rows
+            //rows would be accessed using the "row" variable assigned in the for loop
+            for (var j = 0, col; col = row.cells[j]; j++) {
+              if (j === 0) {
+                id = col.childNodes[0].value;
+                //selContent += "<option value=\'" + v + ":" + data.id + "\'>"  + "<\/option>";
+
+                //var id = v[0].value;
+              }
+              if (j === 1) {
+                selContent += "<option value=\'" + id + ":" + popup.split('-').pop() + "\'>" + col.innerHTML + "<\/option>";
+                sel.innerHTML = selContent;
+              }
+            }
+          }
+          sel.selectedIndex = 0;
+        }
+
+        // if we're editing an entry in the DB, fill out the form with the
+        // info first so it can just be changed.
+        function editID(id, type) {
+          console.log(id + ":" + type);
+          var myType = type;
+          var url = dbServerURL + type + "/" + id;
+          jQuery.getJSON(url, function (data) {
+            document.getElementById("editModalLabel").innerHTML = "Edit " + getType() + " Info";
+            document.getElementById("name-text").value = data.Name;
+            document.getElementById("address-text").value = data.Address;
+            document.getElementById("city-text").value = data.City;
+            document.getElementById("state-text").value = data.State;
+            document.getElementById("zip-text").value = data.Zip;
+            document.getElementById("homePhone-text").value = data.HomePhone;
+            document.getElementById("cellPhone-text").value = data.CellPhone;
+            document.getElementById("email-text").value = data.Email;
+            if (data.hasOwnProperty("Notes")) {
+              document.getElementById("notes-text").value = data.Notes;
+            }
+            document.getElementById("id-text").value = data._id;
+            document.getElementById("saveButton").setAttribute('onclick', 'addData()');
+            document.getElementById("type-text").value = myType;
+            $('#updateModal').modal('show')
+          });
+          this.getType = function () {
+            return myType
+          }
+        }
+
+        // when a driver is selected for an attendee, add the attendee to driver's table entry
+        // @val = driver-id : passenger-id
+        // @name is the driver's name, which is added to the attendees table entry
+        function driverSelected(val, name) {
+          const opt = document.getElementById(val).options;
+          const ind = document.getElementById(val).selectedIndex;
+          const driverName = document.getElementById(val).options[document.getElementById(val).selectedIndex].text
+          const tid = document.getElementById(val).options[document.getElementById(val).selectedIndex];
+          const ids = document.getElementById(val).options[document.getElementById(val).selectedIndex].value.split(':');
+          for (var x = 0; x < markers.length; x++) {
+            if (markers[x].id === ids[1]) {
+              markers[x].infowindow.close();
+              break;
+            }
+          }
+          const selRow = document.getElementById(ids[1]);
+          selRow.style.background = routed;
+          const driverCell = document.getElementById(ids[1]).cells[3];
+          const url = dbServerURL + "attendees/" + ids[1];
+          jQuery.getJSON(url, function (data) {
+            var dl = document.getElementById(ids[1] + "-passengers");
+            if(dl === null) {
+              dl = document.createElement("ul");
+              dl.id = ids[1] + "-passengers";
+              dl.setAttribute('class', 'list-group');
+              driverCell.appendChild(dl);
+            }
+            // var tbl = document.getElementById("pList-" + ids[0] + "-Table");
+            // var row = tbl.insertRow(-1);
+            row.id = data._id;
+            const pass = document.createElement("li");
+            pass.id = data._id + "-rider";
+            pass.innerHTML = data.Name;
+            const but = document.createElement("button");
+            but.setAttribute('class', 'btn btn-danger btn-xs');
+            but.id = data._id;
+            but.setAttribute('onclick', 'clearCell(this.id, this.value)');
+            but.value = ids[0];
+            but.innerHTML = "X";
+            pass.appendChild(but);
+            dl.appendChild(pass);
+            // var cell = row.insertCell(0);
+            // cell.innerHTML = "• " + data.Name;
+            // driverCell.innerHTML = driverName;
+            // cell = row.insertCell(1);
+            // cell.innerHTML = "<button id=\"" + data._id + "\" onclick=\"clearCell(this.id, this.value)\" value=\"" + ids[0] + "\" name=\"Remove\">Remove<\/button>"
+            for (var x = 0; x < driverList.length; x++) {
+              if (driverList[x].id === ids[0]) {
+                addToMap(data._id, "Attendees", driverList[x].map);
+                break;
+              }
+            }
+          });
+        }
+
+        // clear a cell from a table
+        // entry is cleared from any mini-map and added to the main map as required
+        function clearCell(cellID, mapID) {
+          var element = document.getElementById(cellID);
+          element.parentNode.removeChild(element);
+          element = document.getElementById(cellID);
+          element.removeAttribute("style");
+          element.cells[3].innerHTML = "";
+          removeFromMap(cellID, mapID);
+          addToMap(cellID, "Attendees", map);
+        }
+
+        // remove a row from the table
+        // removes attendee from route, puts them back on the main map, and sets their color
+        function removeRow(rowID) {
+          var riders = document.getElementById("pList-" + rowID + "-Table");
+          if (riders != null) {
+            var rTable = riders.getElementsByTagName('tbody')[0];
+            var riderRows = rTable.rows;
+            var rlen = riderRows.length;
+            while (riderRows.length > 1) {
+              var delId = riderRows[riderRows.length - 1].id
+              clearCell(delId, rowID);
+            }
+          }
+          var row = document.getElementById(rowID);
+          var p = row.parentNode.parentNode.id;
+          var cells = row.cells;
+          addToSelect(rowID, cells[1].innerHTML, p);
+          removeFromMap(rowID, "Main");
+          row.parentNode.removeChild(row);
+
+        }
+
+        // add a marker to the map
+        function addToMap(id, type, mapID) {
+          const icon = type.toLowerCase() === 'drivers' ? "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" : "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
+          const url = dbServerURL + type + "/" + id;;
+          removeFromMap(id, "Main");
+          jQuery.getJSON(url, function (data) {
+            const myLatLng = data.Location;
+            // var id = getID();
+            const marker = new google.maps.Marker({
+              position: data.Location,
+              map: mapID,
+              animation: google.maps.Animation.DROP,
+              title: data.Name,
+              icon: icon,
+              id: id
+            });
+            const infowindow = new google.maps.InfoWindow({
+              content: ""
+            });
+            const inf = document.createElement("div");
+            inf.id = "content";
+            const head = document.createElement("h1");
+            head.id = "firstHeading";
+            head.className = "firstHeading";
+            head.innerHTML = data.Name;
+            inf.appendChild(head);
+            if(mapID.name === 'Main') {
+              // Fill in the pop-up window
+              const body = document.createElement("div");
+              body.id = "bodyContent";
+              const p = document.createElement("details");
+              p.id = "details";
+              const summary = document.createElement("summary");
+              summary.innerHTML = "Address";
+              p.appendChild(summary);
+              // const par = document.createElement("p");
+              // par.innerHTML = "Address: " + data.Address +  '</\ br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp' +  data.City + ', ' + data.State;
+              const add = document.createElement("address");
+              add.append(data.Address);
+              add.append(document.createElement("br"));
+              add.append(data.City + ", " + data.State + " " + data.Zip);
+              // p.innerHTML = val;
+              p.appendChild(add);
+              body.appendChild(p);
+              if(data.HomePhone !== "" && data.HomePhone !== null){
+                // body.appendChild(document.createElement("br"));
+                const p2 = document.createElement("p");
+                p2.append("Home: ")
+                const a = document.createElement("a");
+                a.href = "tel:" + data.HomePhone;
+                a.innerHTML = data.HomePhone;
+                p2.appendChild(a);
+                body.appendChild(p2);
+              }
+              if(data.CellPhone !== "" && data.CellPhone !== null){
+                const p3 = document.createElement("p");
+                p3.append("Cell: ")
+                const a2 = document.createElement("a");
+                a2.href = "tel:" + data.CellPhone;
+                a2.innerHTML = data.CellPhone;
+                p3.appendChild(a2);
+                body.appendChild(p3);
+              }
+              if(data.Email !== "" && data.Email !== null){
+                const p6 = document.createElement("p");
+                const a3 = document.createElement("a");
+                a3.href = "mailto:" + data.Email;
+                a3.innerHTML = data.Email;
+                p6.appendChild(a3);
+                body.appendChild(p6);
+              }
+              if (data.hasOwnProperty('Notes') && data.Notes !== "" && data.Notes !== null) {
+                const p4 = document.createElement("p");
+                const strong = document.createElement("strong");
+                strong.innerHTML = "Notes: " + data.Notes;
+                p4.appendChild(strong);
+                body.appendChild(p4);
+              }
+              if (type.toLowerCase() === 'attendees') {
+                const selectDriver = document.createElement("select");
+                selectDriver.id = "route-" + data._id;
+                selectDriver.name = "route-" + data._id;
+                selectDriver.value = data.Name;
+                selectDriver.setAttribute("onmousedown", "fillList(this.id, this.value)");
+                selectDriver.setAttribute("onchange", "driverSelected(this.id, this.value)");
+                const option = document.createElement("option");
+                option.value = "None Selected";
+                option.name = "None Selected";
+                option.innerHTML = "Select Driver";
+                selectDriver.appendChild(option);
+                body.appendChild(selectDriver);
+              }
+              // body.appendChild();
+              inf.appendChild(body);
+            }
+            infowindow.setContent(inf);
+            marker.infowindow = infowindow;
+            marker.addListener('click', function () {
+              this.infowindow.open(mapID, this);
+            });
+            google.maps.event.addListener(marker.infowindow, 'domready', function () {
+              $('#route').on('change', function (evt, params) {
+                console.log("Driver Selected: " + $(this).val());
+                // addPassengerToRoute($(this).val());
+              });
+            }); // end addListener
+            if (mapID.name === "Main") {
+              markers.push(marker);
+            } else {
+              for (var x = 0; x < driverList.length; x++) {
+                if (driverList[x].id === mapID.name) {
+                  driverList[x].markers.push(marker);
+                  break;
+                }
+              }
+            }
+          });
+        }
+
+        // remove a marker from the map
+        function removeFromMap(id, mapID) {
+          if (mapID === "Main") {
+            for (var x = 0; x < markers.length; x++) {
+              if (markers[x].id === id) {
+                markers[x].setMap(null);
+                markers.splice(x, 1);
+                break; // removed from aray and map
+              }
+            }
+          } else {
+            for (var x = 0; x < driverList.length; x++) {
+              if (driverList[x].id === mapID) {
+                var m = driverList[x].markers;
+                for (var y = 0; y < driverList[x].markers.length; y++) {
+                  if (driverList[x].markers[y].id === id) {
+                    driverList[x].markers[y].setMap(null);
+                    driverList[x].markers.splice(y, 1);
+                    return;
+                  }
+                }
+              }
+            }
+
+          }
+        }
+
+        // add a name back to the SELECT if it is removed from a table
+        function addToSelect(id, pName, type) {
+          if (type === "driversTable") {
+            type = "Drivers";
+          } else {
+            type = "Attendees";
+          }
+          var selNode = document.createElement("li");
+          selNode.id = type.toLowerCase() + "-" + id;
+          butNode = document.createElement("button");
+          butNode.id = id;
+          butNode.value = type.toLowerCase();
+          butNode.onclick = function () {
+            selectedChoice(this.id, this.value)
+          };
+          butNode.className = "dropdown-item";
+          butNode.type = "button";
+          butNode.innerHTML = pName;
+          selNode.appendChild(butNode);
+          var selectList = document.getElementById(type);
+          document.getElementById(type).appendChild(selNode);
+        }
+
+        // build the SELECT list of names from the supplied db table
+        function buildList(type) {
+          const fb = document.getElementById(type.toLowerCase());
+          const butt = document.createElement('button');
+          const url = encodeURI(dbServerURL + type + "?filter={\"order\": \"Name ASC\"}");
+          jQuery.getJSON(url, function (data) {
+            const lastPart = getLast(this.url.split("?")[0]);
+            butt.setAttribute('class', 'btn btn-success dropdown-toggle');
+            butt.setAttribute('type', 'button');
+            butt.setAttribute('data-bs-toggle', 'dropdown');
+            butt.setAttribute('aria-expanded', 'false');
+            butt.setAttribute('name', lastPart.toLowerCase());
+            butt.innerHTML = 'Select ' + lastPart;
+            const list = document.createElement('ul');
+            list.setAttribute('class', 'dropdown-menu');
+            list.setAttribute('aria-labelledby', 'dropdownMenuButton1');
+            list.setAttribute('id', lastPart[0].toUpperCase() + lastPart.slice(1).toLowerCase());
+
+            for (var x = 0; x < data.length; x++) {
+              const li = document.createElement('li');
+              li.setAttribute('id', lastPart.toLowerCase() + '-' + data[x]._id);
+              const button = document.createElement('button');
+              button.setAttribute('id', data[x]._id);
+              button.setAttribute('value', lastPart.toLowerCase());
+              button.setAttribute('onclick', 'selectedChoice(this.id, this.value)');
+              button.setAttribute('class', 'dropdown-item');
+              button.setAttribute('type', 'button');
+              button.innerHTML = data[x].Name;
+              li.appendChild(button);
+              list.appendChild(li);
+            }
+            butt.appendChild(list);
+            fb.replaceChildren(butt);
+            // document.getElementById(lastPart.toLowerCase()).innerHTML = selectVal;
+          });
+          document.getElementById('selected' + type).innerHTML = "<table style=\"width: 100%;\" border=1 id=\"" + type.toLowerCase() + "Table\" \>";
+          var row = document.getElementById(type.toLowerCase() + "Table").createTHead().insertRow(0);
+          var cell = [];
+          var headers;
+          if (type === "Drivers") {
+            headers = ["Manage", "Name", "Address", "Home Phone", "Cell Phone", "Email", "Notes", "Passengers", "Map"];
+
+          } else {
+            headers = ["Manage", "Name", "Notes", "Driver"];
+          }
+          for (var x = 0; x < headers.length; x++) {
+            cell.push(row.insertCell(x));
+            cell[x].innerHTML = "<strong>" + headers[x] + "</strong>";
+            cell[x].style.width = '100px';
+            if (headers[x] === "Map") {
+              cell[x].style.width = '400px';
+            }
+          }
+          document.getElementById(type.toLowerCase() + "Table").appendChild(document.createElement('tbody'));
+        }
+
+        buildList("Drivers");
+        buildList("Attendees");
+      </script>
+      <div class="modal fade" id="updateModal" tabindex="- 1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span></button>
+              <h3 class="modal-title" id="editModalLabel" style="text-align: center;"></h3>
+            </div>
+            <div class="modal-body">
+              <form name="dataForm" id="dataForm">
+                <div class="row ">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="name " class="control-label">Name:</label> <input type="text" class="form-control "
+                        id="name-text" />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="address-text" class="control-label">Address:</label>
+                      <textarea class="form-control" id="address-text"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group">
+                    <div class="col-md-6">
+                      <label for="city-text" class="control-label">City:</label> <input type="text" class="form-control"
+                        id="city-text" />
+                    </div>
+                    <div class="col-md-2 ">
+                      <label for="state-text" class="control-label">State:</label> <input type="text"
+                        class="form-control" id="state-text" max-length="2" size="2" />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="zip-text" class="control-label">Zip:</label> <input type="text" class="form-control"
+                        id="zip-text" max-length="9" size="9" />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group">
+                    <div class="col-md-6">
+                      <label for="homePhone-text" class="control-label">Home Phone:</label>
+                      <textarea class="form-control" id="homePhone-text"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="cellPhone-text" class="control-label">Cell Phone:</label>
+                      <textarea class="form-control" id="cellPhone-text"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="email-text" class="control-label">Email:</label>
+                      <textarea class="form-control" id="email-text"></textarea>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="form-group">
+                      <label for="notes-text" class="control-label">Notes:</label>
+                      <textarea class="form-control" id="notes-text"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <input type="hidden" id="id-text" />
+            <input type="hidden" id="type-text" />
+            <div class="modal-footer">
+              <button type="button" class="tn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" id="saveButton" class="btn btn-primary" onclick=" "
+                data-dismiss="modal">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="emailRouteModal" tabindex="- 1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span></button>
+              <h3 class="modal-title" id="emailRouteTitle" style="text-align: center;"></h3>
+            </div>
+            <div class="modal-body" id="eDoc">
+
+            </div>
+            <div class="modal-footer">
+
+              <button type="button" class="tn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuLSgVZY-8HyIIMsPMKgvfK6LsLCeSlJA&callback=initMap"
+        async type="text/javascript"></script>
+</body>
+
+</html>

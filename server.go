@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	// "crypto/x509"
 	"encoding/json"
+	// "errors"
 	"fmt"
+	// "io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -52,7 +55,7 @@ type Location struct {
 }
 
 func (s *Server) Initialize() error {
-	// rootPEM, err := ioutil.ReadFile("./cert.pem")
+	// rootPEM, err := ioutil.ReadFile("./combined")
 	// if err != nil {
 	// 	return err
 	// }
